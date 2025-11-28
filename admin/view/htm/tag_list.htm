@@ -1,0 +1,64 @@
+<?php include _include(ADMIN_PATH.'view/htm/header.inc.htm');?>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <h4>
+                        <?php echo lang('tag_admin');?>
+                    </h4>
+                    <a href="<?php echo url('tag-create');?>" class="btn btn-primary">
+                        <?php echo lang('create');?>
+                    </a>
+                </div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Count</th>
+                            <th>Enable</th>
+                            <th>Operation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if($taglist) { foreach($taglist as $tag) { ?>
+                        <tr>
+                            <td>
+                                <?php echo $tag['tagid'];?>
+                            </td>
+                            <td>
+                                <?php echo $tag['name'];?>
+                            </td>
+                            <td>
+                                <?php echo $tag['count'];?>
+                            </td>
+                            <td>
+                                <?php echo $tag['enable'];?>
+                            </td>
+                            <td>
+                                <a href="<?php echo url(" tag-update-$tag[tagid]");?>" class="btn btn-primary btn-sm">
+                                    <?php echo lang('edit');?>
+                                </a>
+                                <a href="javascript:void(0)"
+                                    onclick="if(confirm('<?php echo lang('confirm_delete');?>')) location.href='<?php echo url("
+                                    tag-delete-$tag[tagid]");?>'" class="btn btn-danger btn-sm">
+                                    <?php echo lang('delete');?>
+                                </a>
+                            </td>
+                        </tr>
+                        <?php }} ?>
+                    </tbody>
+                </table>
+                <nav class="my-3">
+                    <ul class="pagination justify-content-center">
+                        <?php echo $pagination; ?>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php include _include(ADMIN_PATH.'view/htm/footer.inc.htm');?>

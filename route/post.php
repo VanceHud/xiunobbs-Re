@@ -134,21 +134,6 @@ if($action == 'create') {
 		
 		($uid != $post['uid']) AND $post['message'] = xn_html_safe($post['message']);
 		
-		$attachlist = $imagelist = $filelist = array();
-		if($post['files']) {
-			list($attachlist, $imagelist, $filelist) = attach_find_by_pid($pid);
-		}
-		
-		// hook post_update_get_end.php
-		
-		include _include(APP_PATH.'view/htm/post.htm');
-		
-	} elseif($method == 'POST') {
-		
-		$subject = htmlspecialchars(param('subject', '', FALSE));
-		$message = param('message', '', FALSE);
-		$doctype = param('doctype', 0);
-		
 		// hook post_update_post_start.php
 		
 		empty($message) AND message('message', lang('please_input_message'));
@@ -161,21 +146,6 @@ if($action == 'create') {
 			empty($forum) AND message('fid', lang('forum_not_exists'));
 			
 			if($fid != $newfid) {
-				!forum_access_user($fid, $gid, 'allowthread') AND message(-1, lang('user_group_insufficient_privilege'));
-				$post['uid'] != $uid AND !forum_access_mod($fid, $gid, 'allowupdate') AND message(-1, lang('user_group_insufficient_privilege'));
-				$arr['fid'] = $newfid;
-			}
-			if($subject != $thread['subject']) {
-				mb_strlen($subject, 'UTF-8') > 80 AND message('subject', lang('subject_max_length', array('max'=>80)));
-				$arr['subject'] = $subject;
-			}
-			$arr AND thread_update($tid, $arr) === FALSE AND message(-1, lang('update_thread_failed'));
-		}
-		$r = post_update($pid, array('doctype'=>$doctype, 'message'=>$message));
-		$r === FALSE AND message(-1, lang('update_post_failed'));
-		
-		// hook post_update_post_end.php
-		
 		message(0, lang('update_successfully'));
 		//message(0, array('pid'=>$pid, 'subject'=>$subject, 'message'=>$message));
 	}

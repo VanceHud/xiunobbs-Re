@@ -19,19 +19,6 @@ $include_model_files = array (
 	APP_PATH.'model/post.func.php',
 	APP_PATH.'model/attach.func.php',
 	APP_PATH.'model/check.func.php',
-	APP_PATH.'model/mythread.func.php',
-	APP_PATH.'model/runtime.func.php',
-	APP_PATH.'model/table_day.func.php',
-	APP_PATH.'model/cron.func.php',
-	APP_PATH.'model/form.func.php',
-	APP_PATH.'model/misc.func.php',
-	APP_PATH.'model/session.func.php',
-	
-	// hook model_inc_file.php
-	
-);
-
-// hook model_inc_include_before.php
 
 if(DEBUG) {
 	foreach ($include_model_files as $model_files) {

@@ -56,21 +56,6 @@ if($action == 'create') {
 		xn_strlen($message) > 2028000 AND message('message', lang('message_too_long'));
 		
 		$thread = array (
-			'fid'=>$fid,
-			'uid'=>$uid,
-			'sid'=>$sid,
-			'subject'=>$subject,
-			'message'=>$message,
-			'time'=>$time,
-			'longip'=>$longip,
-			'doctype'=>$doctype,
-		);
-		
-		// hook thread_create_thread_before.php
-		
-		$tid = thread_create($thread, $pid);
-		$pid === FALSE AND message(-1, lang('create_post_failed'));
-		$tid === FALSE AND message(-1, lang('create_thread_failed'));
 		
 		// hook thread_create_thread_end.php
 		message(0, lang('create_thread_sucessfully'));

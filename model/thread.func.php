@@ -113,6 +113,21 @@ function thread_create($arr, &$pid) {
 	forum_list_cache_delete();
 	
 	// hook model_thread_create_end.php
+
+	// 处理标签
+	if(!empty($arr['tags'])) {
+		$tags = $arr['tags'];
+		foreach($tags as $tagname) {
+			$tag = tag_find_by_name($tagname);
+			if(empty($tag)) {
+				$tagid = tag__create(array('name'=>$tagname, 'count'=>1));
+			} else {
+				$tagid = $tag['tagid'];
+				tag__update($tagid, array('count+'=>1));
+			}
+			tag_thread__create($tagid, $tid);
+		}
+	}
 	
 	return $tid;
 }
@@ -140,6 +155,41 @@ function thread_update($tid, $arr) {
 	$r = thread__update($tid, $arr);
 	
 	// hook model_thread_update_end.php
+
+	// 处理标签
+	if(isset($arr['tags'])) {
+		$oldtags = tag_thread_find_by_tid($tid);
+		$oldtagids = arrlist_values($oldtags, 'tagid');
+		
+		$tags = $arr['tags']; // 新标签数组
+		$newtagids = array();
+		foreach($tags as $tagname) {
+			$tag = tag_find_by_name($tagname);
+			if(empty($tag)) {
+				$tagid = tag__create(array('name'=>$tagname, 'count'=>1));
+			} else {
+				$tagid = $tag['tagid'];
+				// 如果之前没有关联，则计数+1
+				if(!in_array($tagid, $oldtagids)) {
+					tag__update($tagid, array('count+'=>1));
+				}
+			}
+			$newtagids[] = $tagid;
+			// 关联
+			if(!in_array($tagid, $oldtagids)) {
+				tag_thread__create($tagid, $tid);
+			}
+		}
+		
+		// 删除旧标签关联
+		foreach($oldtagids as $tagid) {
+			if(!in_array($tagid, $newtagids)) {
+				tag_thread__delete($tagid, $tid);
+				tag__update($tagid, array('count-'=>1));
+			}
+		}
+	}
+
 	return $r;
 }
 
@@ -203,6 +253,13 @@ function thread_delete($tid) {
 	runtime_set('threads-', 1);
 	
 	// hook model_thread_delete_end.php
+
+	// 删除标签关联
+	$taglist = tag_thread_find_by_tid($tid);
+	foreach($taglist as $tag) {
+		tag__update($tag['tagid'], array('count-'=>1));
+	}
+	tag_thread_delete_by_tid($tid);
 	
 	return $r;
 }
@@ -338,6 +395,16 @@ function thread_format(&$thread) {
 	$thread['pages'] = ceil($thread['posts'] / $conf['postlist_pagesize']);
 		
 	// hook model_thread_format_end.php
+
+	// 格式化标签
+	$taglist = tag_thread_find_by_tid($thread['tid']);
+	$thread['taglist'] = array();
+	if($taglist) {
+		foreach($taglist as $t) {
+			$tag = tag_read($t['tagid']);
+			$thread['taglist'][] = $tag;
+		}
+	}
 }
 
 function thread_format_last_date(&$thread) {

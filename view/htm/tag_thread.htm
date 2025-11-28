@@ -1,0 +1,34 @@
+<?php include _include(APP_PATH.'view/htm/header.inc.htm');?>
+
+<div class="row">
+    <div class="col-lg-9 main">
+        <div class="card card-threadlist">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="javascript:void(0);">
+                            <?php echo $tag['name'];?>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled threadlist mb-0">
+                    <?php include _include(APP_PATH.'view/htm/thread_list.inc.htm');?>
+                </ul>
+            </div>
+        </div>
+
+        <?php include _include(APP_PATH.'view/htm/thread_list_mod.inc.htm');?>
+
+        <nav class="my-3">
+            <ul class="pagination justify-content-center">
+                <?php echo $pagination; ?>
+            </ul>
+        </nav>
+    </div>
+    <div class="col-lg-3 d-none d-lg-block aside">
+    </div>
+</div>
+
+<?php include _include(APP_PATH.'view/htm/footer.inc.htm');?>
