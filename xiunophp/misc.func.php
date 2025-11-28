@@ -725,27 +725,6 @@ function is_robot() {
 	foreach($robots as $robot) {
 		if(strpos($agent, $robot) !== FALSE) {
 			return TRUE;
-		}
-	}
-	return FALSE;
-}
-
-function browser_lang() {
-	// return 'zh-cn';
-	$accept = _SERVER('HTTP_ACCEPT_LANGUAGE');
-	$accept = substr($accept, 0, strpos($accept, ';'));
-	if(strpos($accept, 'ko-kr') !== FALSE) {
-		return 'ko-kr';
-	// } elseif(strpos($accept, 'en') !== FALSE) {
-	// 	return 'en';
-	} else {
-		return 'zh-cn';
-	}
-}
-
-// 安全请求一个 URL
-// ini_set('default_socket_timeout', 60);
-function http_get($url, $cookie = '', $timeout = 30, $times = 3) {
 	//return '';
 //	$arr = array(
 //			'ssl' => array (

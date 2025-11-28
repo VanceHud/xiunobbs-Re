@@ -7,7 +7,25 @@
 $sid = sess_start();
 
 // 语言 / Language
-$_SERVER['lang'] = $lang = include _include(APP_PATH."lang/$conf[lang]/bbs.php");
+// 语言 / Language
+$lang = param('lang');
+if($lang) {
+	// 安全过滤
+	$lang = xn_safe_word($lang, 16);
+	setcookie('lang', $lang, $time + 8640000, '/');
+	$_COOKIE['lang'] = $lang;
+} else {
+	$lang = _COOKIE('lang');
+	if(empty($lang)) {
+		$lang = browser_lang();
+		$lang = $lang ? $lang : $conf['lang'];
+	}
+}
+
+// 检查语言包是否存在
+!is_file(APP_PATH."lang/$lang/bbs.php") AND $lang = $conf['lang'];
+
+$_SERVER['lang'] = $lang = include _include(APP_PATH."lang/$lang/bbs.php");
 
 // 用户组 / Group
 $grouplist = group_list_cache();
